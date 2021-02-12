@@ -1,0 +1,279 @@
+---
+title: "coffee_roasting"
+output: html_document
+---
+```{r Setup, include = FALSE}
+# Set working directory to where this notebook is saved
+knitr::opts_chunk$set(echo = FALSE, comment = NA, warning = FALSE, error = FALSE, message = FALSE, tidy = TRUE, global.par = TRUE, knitr.table.format = "html")
+knitr::opts_knit$set(root.dir = '/...')
+```
+
+```{r Load Libraries}
+# setwd("W:/HSSA/Keep/Jaclyn Ziebert/R/CSV") # if you want to change wd, put this in the code block
+# install.packages("tidyverse", repo = 'https://cran.R-project.org')  try this to install packages in base R, not RStudio
+
+library(tidyverse)    # includes tidyr, tibble, and more
+library(lubridate)    # for working with dates, need this for data import
+library(readxl)
+library(ggtext)       # HTML for charts
+library(ggrepel)
+library(plotly)
+# library(data.table)   # db files are loaded as a data table, need this package
+# library(janitor)      # make tabyl, adorn_totals
+# library(rlang)        # {{variable}} to make ggplot2 functions
+# library(kableExtra)   # styling for HTML
+
+```
+
+```{r}
+haiti <- readxl::read_xlsx("C:/coffee_roasting/21-02-09_2015_Haiti_Baptiste.xlsx", skip = 3) %>% select(1:6) %>% rename(change_BT = "Δ BT")
+# haiti$Time2 %>% typeof()
+haiti <- haiti %>% mutate(Time2 = lubridate::ms(Time2))
+# haiti$Time2 <- as.POSIXct(haiti$Time2, format="%M:%S")
+```
+```{r}
+# could also change height of fan
+# maillard rgb(247,198,111)
+haiti[grepl("Heat", haiti$Event), "event_color" ] <- "#f71212"
+haiti[grepl("Fan", haiti$Event), "event_color" ] <- "#0d0dff"
+haiti[grepl("FC", haiti$Event), "event_color" ] <- "#c5a872"
+haiti[grepl("Dry End", haiti$Event), "event_color" ] <- "#77b36f"
+haiti[grepl("Charge", haiti$Event), "event_color" ] <- "#222921"
+
+haiti$event_color %>% typeof()
+
+haiti <- haiti %>% mutate(anno_loc = ifelse(grepl("Heat", haiti$Event), BT + 30, BT))
+```
+
+
+
+```{r setup, include=FALSE}
+# haiti <- read.csv("C:/coffee_roasting/21-02-09_2015_Haiti_Baptiste.csv", sep = "\t") %>% select(1:5) %>% janitor::row_to_names(row_number = 1) #%>% na.omit()
+# haiti$Time2 <- as.POSIXct(haiti$Time2, format="%M:%S")
+# haiti <- haiti %>% mutate(ET = as.numeric(ET), BT = as.numeric(BT))
+# haiti %>% mutate(Time2 = as.POSIXct(Time2, format = "%M:%S")) , Time2 = lubridate::ms(Time2)
+# lubridate::ms("00:09")
+```
+
+
+
+```{r  theme_ggplot2, echo = FALSE}
+theme_coffee_charts <- function(base_size = 12) {
+  theme_classic(base_size = base_size) %+replace%
+    theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.line = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_text(size = base_size),
+    panel.grid.major.x = element_line(color = "black"),
+    legend.position = "none",
+    strip.background=element_rect(fill="#CCD2D4", colour="transparent"),
+    strip.text  =element_markdown(size = base_size, hjust = 0, margin=margin(0,0,2,2)),
+    plot.title.position = "plot",
+    plot.caption.position =  "plot",
+    plot.title = element_markdown(lineheight = 1.1, size = base_size + 2, hjust = 0, margin=margin(0,0,5,0)), # for title colors
+    plot.caption = element_text(hjust = 0, face= "italic")
+    # legend.text = element_markdown(size = 11)
+    )
+}
+
+# Changing the default theme
+theme_set(theme_coffee_charts())
+```
+
+```{r,  fig.width=12,fig.height=6}
+
+haiti %>% filter(!is.na(Time2)) %>% ggplot() + geom_rect(aes(
+  xmin = lubridate::ms("00:00"),
+  xmax = lubridate::ms("08:00"),
+  ymin = 0,
+  ymax = 100
+),
+fill = "#d9ecd9") + geom_rect(aes(
+  xmin = lubridate::ms("00:00"),
+  xmax = lubridate::ms("08:00"),
+  ymin = 100,
+  ymax = 300
+),
+fill = "#fff1d9") + geom_rect(aes(
+  xmin = lubridate::ms("00:00"),
+  xmax = lubridate::ms("08:00"),
+  ymin = 300,
+  ymax = 500
+),
+fill = "#efe8e0") + # FC area
+  geom_rect(aes(
+  xmin = haiti$Time2[grepl("FCs", haiti$Event), "Time2"],
+  xmax = haiti$Time2[grepl("FCe", haiti$Event), "Time2"],
+  ymin = 0,
+  ymax = 500
+),
+fill = "#efe8e0") +
+  scale_y_continuous(expand = expansion(mult = c(0, .05)),
+                     name = "") +
+  theme_coffee_charts() +
+  geom_line(aes(x = Time2, y = ET), color = "#ff0000", size = 2) + # ET
+  scale_x_time(expand = expansion(mult = c(0, .05)), name = "") +
+  geom_line(aes(x = Time2, y = BT), color = "#00007f", size = 2) +
+  geom_line(aes(x = Time2, y = change_BT *6.25),
+            color = "#0000ff",
+            size = 2) +
+  geom_label_repel(
+    aes(x = Time2, y = BT,
+      label = Event),
+      # fill = as.character(event_color),
+      # color = "#ffffff",
+      segment.colour = "black"
+      # fontface = 'bold',
+      # box.padding = unit(0.35, "lines"),
+      # point.padding = unit(0.5, "lines")
+    
+  ) +
+  labs(
+    title = "<span style='font-size:16pt'>
+    <span style='color:#00007f;'>**BT**</span>,
+    <span style='color:#ff0000;'>**ET**</span>,
+    <span style='color:#0000ff;'>**Change BT**</span> F
+    </span>"
+  )
+
+plotly::ggplotly(gg) %>% add_annotations(x = ~ Time2,  y = ~ BT, text= ~Event, textposition = "top right", font = list(color = "#ffffff"), bgcolor= ~event_color) 
+```
+```{r plotly, fig.width=12,fig.height=6}
+
+time_zero = as_datetime("1970-01-01 00:00:00 UTC")
+plot_ly(
+  haiti,
+  type = 'scatter',
+  mode = 'lines',
+  x = ~ lubridate::as_datetime(Time2),
+  line = list(color = "#00007f"),
+  # x = ~seq(ms("00:00"), ms("10:10")),
+  # x = ~ lubridate::ms(Time2),
+  # x = ~ lubridate::as_datetime(Time1),
+  y = ~ BT,
+  hovertemplate = paste('%{y: 2f}', '<br>%{x:%H %M}<br>'),
+  showlegend = FALSE,
+  name = "BT"
+) %>%
+  add_trace(
+    mode = 'lines',
+    x = ~ lubridate::as_datetime(Time2),
+    # x = ~ lubridate::ms(Time2),
+    # x = ~ lubridate::as_datetime(Time2),
+    y = ~ ET,
+    line = list(color = "#ff0000"),
+    name = "ET"
+  ) %>%
+  add_trace(
+    mode = 'lines',
+    x = ~ lubridate::as_datetime(Time2),
+    # x = ~ lubridate::ms(Time2),
+    # x = ~ lubridate::as_datetime(Time2),
+    y = ~ change_BT * 6.25,
+    line = list(color = "#0000ff"),
+    name = "Ch BT"
+  ) %>%
+  filter(!is.na(Event),
+         !is.na(Time2),
+         Event != "Drop",
+         !grepl("^Charge", Event)) %>%
+  add_annotations(
+    # x =  ~jitter(Time2), 
+    # y = ~jitter(BT, 30),
+    text = ~ Event,
+    textposition = "top center",
+    arrowhead = .5,
+    arrowwidth = 1,
+    font = list(size = 12, color = "#ffffff"),
+    bgcolor = ~ event_color
+  ) %>%
+  layout(
+    shapes = list(
+      list(
+        type = rect,
+        x0 = time_zero,
+        x1 = max(as_datetime(haiti$Time2), na.rm = TRUE),
+        y0 = 0,
+        y1 = 100,
+        line = list(color = '#d9ecd9'),
+        fillcolor = '#d9ecd9',
+        layer = 'below'
+      ),
+      list(
+        type = rect,
+        x0 = time_zero,
+        x1 = max(as_datetime(haiti$Time2), na.rm = TRUE),
+        y0 = 100,
+        y1 = 300,
+        line = list(color = '#fff1d9'),
+        fillcolor = '#fff1d9',
+        layer = 'below'
+      ),
+      list(
+        type = rect,
+        x0 = time_zero,
+        x1 = max(as_datetime(haiti$Time2), na.rm = TRUE),
+        y0 = 300,
+        y1 = 500,
+        line = list(color = '#efe8e0'),
+        fillcolor = '#efe8e0',
+        #dtick= 59,   tickformat="%M:%S",
+        layer = 'below'
+      ),
+      list(
+        type = rect,
+        x0 = as_datetime(haiti$Time2[grepl("FCs", haiti$Event), "Time2"]),
+        x1 = as_datetime(haiti$Time2[grepl("FCe", haiti$Event), "Time2"]),
+        y0 = 0,
+        y1 = 500,
+        line = list(color = '#ebe134'),
+        fillcolor = '#ebe134',
+        opacity = 0.2,
+        layer = 'below'
+      )
+    ),
+    xaxis = list(
+       gridcolor = toRGB("gray85"),
+      title = "",
+      zeroline = F,
+      showline = F,
+      showgrid = T,
+      tick0 = time_zero,
+      tickformat = "%M:%S",
+      dtick = 30000
+    ),
+    yaxis = list(
+      title = "",
+      zeroline = F,
+      showline = F,
+      showgrid = F
+    )
+  )
+```
+
+```{r}
+haiti$Time2 %>% as_datetime()
+as_datetime(haiti$Time2) %>% year()
+
+haiti %>% filter( year((Time2)) == 2000) 
+```
+
+
+```{r tasting}
+df = read.csv('https://raw.githubusercontent.com/plotly/datasets/718417069ead87650b90472464c7565dc8c2cb1c/coffee-flavors.csv')
+
+fig <- plot_ly()
+
+fig <- fig %>% add_trace(
+  type='sunburst',
+  ids=df$ids,
+  labels=df$labels,
+  parents=df$parents,
+  domain=list(column=1),
+  maxdepth=2,
+  insidetextorientation='radial'
+)
+fig
+```
