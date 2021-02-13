@@ -1,0 +1,11 @@
+"0","library(crosstalk)
+"
+"2","
+Attaching package: ‘crosstalk’
+
+"
+"2","The following object is masked from ‘package:shiny’:
+
+    getDefaultReactiveDomain
+
+"

@@ -18,6 +18,7 @@ library(readxl)
 library(ggtext)       # HTML for charts
 library(ggrepel)
 library(plotly)
+library(crosstalk)
 # library(data.table)   # db files are loaded as a data table, need this package
 # library(janitor)      # make tabyl, adorn_totals
 # library(rlang)        # {{variable}} to make ggplot2 functions
@@ -26,7 +27,7 @@ library(plotly)
 ```
 
 ```{r}
-haiti <- readxl::read_xlsx("C:/coffee_roasting/21-02-09_2015_Haiti_Baptiste.xlsx", skip = 3) %>% select(1:6) %>% rename(change_BT = "Δ BT")
+haiti <- readxl::read_xlsx("C:/W_shortcut/coffee_roasting/21-02-09_2015_Haiti_Baptiste.xlsx", skip = 3) %>% select(1:6) %>% rename(change_BT = "Δ BT")
 # haiti$Time2 %>% typeof()
 haiti <- haiti %>% mutate(Time2 = lubridate::ms(Time2))
 # haiti$Time2 <- as.POSIXct(haiti$Time2, format="%M:%S")
@@ -40,9 +41,9 @@ haiti[grepl("FC", haiti$Event), "event_color" ] <- "#c5a872"
 haiti[grepl("Dry End", haiti$Event), "event_color" ] <- "#77b36f"
 haiti[grepl("Charge", haiti$Event), "event_color" ] <- "#222921"
 
-haiti$event_color %>% typeof()
+# haiti$event_color %>% typeof()
 
-haiti <- haiti %>% mutate(anno_loc = ifelse(grepl("Heat", haiti$Event), BT + 30, BT))
+# haiti <- haiti %>% mutate(anno_loc = ifelse(grepl("Heat", haiti$Event), BT + 30, BT))
 ```
 
 
@@ -143,6 +144,11 @@ plotly::ggplotly(gg) %>% add_annotations(x = ~ Time2,  y = ~ BT, text= ~Event, t
 ```{r plotly, fig.width=12,fig.height=6}
 
 time_zero = as_datetime("1970-01-01 00:00:00 UTC")
+time_max = max(as_datetime(haiti$Time2), na.rm = TRUE)
+dry_end = as_datetime(haiti$Time2[grepl("Dry End", haiti$Event), "Time2"])
+first_crack_start = as_datetime(haiti$Time2[grepl("FCs", haiti$Event), "Time2"])
+first_crack_end = as_datetime(haiti$Time2[grepl("FCe", haiti$Event), "Time2"])
+
 plot_ly(
   haiti,
   type = 'scatter',
@@ -153,7 +159,8 @@ plot_ly(
   # x = ~ lubridate::ms(Time2),
   # x = ~ lubridate::as_datetime(Time1),
   y = ~ BT,
-  hovertemplate = paste('%{y: 2f}', '<br>%{x:%H %M}<br>'),
+  # hovertemplate = paste('%{y: .1f}\u00b0F', '<br>%{x}<br>'),
+  hovertemplate = '%{y: .1f}\u00b0F',
   showlegend = FALSE,
   name = "BT"
 ) %>%
@@ -171,10 +178,11 @@ plot_ly(
     x = ~ lubridate::as_datetime(Time2),
     # x = ~ lubridate::ms(Time2),
     # x = ~ lubridate::as_datetime(Time2),
-    y = ~ change_BT * 6.25,
+    y = ~ change_BT,
     line = list(color = "#0000ff"),
-    name = "Ch BT"
-  ) %>%
+    name = "\u0394BT",
+    yaxis = "y2"
+  ) %>% layout(hovermode = "x unified") %>% 
   filter(!is.na(Event),
          !is.na(Time2),
          Event != "Drop",
@@ -190,42 +198,51 @@ plot_ly(
     bgcolor = ~ event_color
   ) %>%
   layout(
+    yaxis2 = list(
+    tickfont = list(color = "#0000ff"),
+    ticksuffix = "\u00b0F",
+    overlaying = "y",
+    side = "right",
+    title = ""
+),
     shapes = list(
       list(
         type = rect,
         x0 = time_zero,
-        x1 = max(as_datetime(haiti$Time2), na.rm = TRUE),
+        x1 = time_max,
         y0 = 0,
         y1 = 100,
         line = list(color = '#d9ecd9'),
         fillcolor = '#d9ecd9',
+        opacity = 0.8,
         layer = 'below'
       ),
       list(
         type = rect,
         x0 = time_zero,
-        x1 = max(as_datetime(haiti$Time2), na.rm = TRUE),
+        x1 = time_max,
         y0 = 100,
         y1 = 300,
         line = list(color = '#fff1d9'),
         fillcolor = '#fff1d9',
+        opacity = 0.8,
         layer = 'below'
       ),
       list(
         type = rect,
         x0 = time_zero,
-        x1 = max(as_datetime(haiti$Time2), na.rm = TRUE),
+        x1 = time_max,
         y0 = 300,
         y1 = 500,
         line = list(color = '#efe8e0'),
         fillcolor = '#efe8e0',
-        #dtick= 59,   tickformat="%M:%S",
+        opacity = 0.8,
         layer = 'below'
       ),
       list(
         type = rect,
-        x0 = as_datetime(haiti$Time2[grepl("FCs", haiti$Event), "Time2"]),
-        x1 = as_datetime(haiti$Time2[grepl("FCe", haiti$Event), "Time2"]),
+        x0 = first_crack_start,
+        x1 = first_crack_end,
         y0 = 0,
         y1 = 500,
         line = list(color = '#ebe134'),
@@ -235,20 +252,27 @@ plot_ly(
       )
     ),
     xaxis = list(
-       gridcolor = toRGB("gray85"),
+      gridcolor = toRGB("gray85"),
       title = "",
       zeroline = F,
       showline = F,
       showgrid = T,
       tick0 = time_zero,
       tickformat = "%M:%S",
-      dtick = 30000
+      dtick = 30000 # Tick every 30 seconds
     ),
     yaxis = list(
       title = "",
+      ticksuffix = "\u00b0F",
       zeroline = F,
       showline = F,
       showgrid = F
+    ),
+    margin = list(
+      r = 30,
+      l = 0,
+      b = 0,
+      t = 0
     )
   )
 ```
@@ -261,19 +285,42 @@ haiti %>% filter( year((Time2)) == 2000)
 ```
 
 
-```{r tasting}
-df = read.csv('https://raw.githubusercontent.com/plotly/datasets/718417069ead87650b90472464c7565dc8c2cb1c/coffee-flavors.csv')
+```{r tasting, fig.height= 10, fig.width=10}
+coffee = read.csv('C:/W_shortcut/coffee_roasting/data/coffee-flavors_counterculture.csv')
+coffee = readxl::read_xlsx('C:/W_shortcut/coffee_roasting/data/coffee-flavors_lexicon.xlsx')
+        plot_ly() %>% add_trace(
+            type='sunburst',
+            ids=coffee$ids,
+            labels=coffee$end_name,
+            parents=coffee$parents,
+            domain=list(column=1),
+            maxdepth=3,
+            insidetextorientation='radial'
+            # markers = list(colors = ("red"))
+        ) #%>% layout(sunburstcolorway = ~coffee$colors)
+```
+```{r}
+library(leaflet)
 
-fig <- plot_ly()
+qquery <- highlight_key(coffee)
 
-fig <- fig %>% add_trace(
-  type='sunburst',
-  ids=df$ids,
-  labels=df$labels,
-  parents=df$parents,
-  domain=list(column=1),
-  maxdepth=2,
-  insidetextorientation='radial'
+p <-  plot_ly(coffee,
+            type='sunburst',
+            ids=coffee$ids,
+            labels=coffee$labels,
+            parents=coffee$parents,
+            domain=list(column=1),
+            maxdepth=2,
+            insidetextorientation='radial'
+            # markers = list(colors = ("red"))
+        ) %>%
+  highlight("plotly_hover", dynamic = TRUE)
+
+map <- DT::datatable(coffee)
+
+# persistent selection can be specified via options()
+withr::with_options(
+  list(persistent = TRUE), 
+  crosstalk::bscols(widths = c(6, 6), p, map)
 )
-fig
 ```

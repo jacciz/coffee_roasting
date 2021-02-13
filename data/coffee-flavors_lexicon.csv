@@ -1,0 +1,116 @@
+﻿,ids,parents,2nd level,labels_to_attach,labels
+,Fruity,Fruity,,,
+,Sour/Acid,Sour/Acid,,,
+,Alcohol/Fermented,Alcohol/Fermented,,,
+,Green/Vegetative,Green/Vegetative,,,
+,Stale/Papery,Stale/Papery,,,
+,Earthy,Earthy,,,
+,Chemical,Chemical,,,
+,Roasted,Roasted,,,
+,Cereal,Cereal,,,
+,Spices,Spices,,,
+,Nutty,Nutty,,,
+,Cocoa,Cocoa,,,
+,Sweet,Sweet,,,
+,Floral,Floral,,,
+Fruity,Fruity-Fruity,Fruity-Fruity,,,"A sweet, floral, aromatic blend of a variety of ripe fruits."
+Berry,Fruity-Berry,Fruity-Berry,,,"The sweet, sour, floral, sometimes heavy aromatic associated with a variety of berries such as blackberries, raspberries, blueberries, or strawberries."
+Strawberry,Fruity-Berry-Strawberry,Fruity-Berry-Berry-Strawberry,Berry,-Berry-,"The somewhat sweet, slightly sour, floral, fruity, frequently winey aromatic associated with strawberry."
+Raspberry,Fruity-Berry-Raspberry,Fruity-Berry-Berry-Raspberry,Berry,-Berry-,"The lightly sweet, fruity, floral, slightly sour and musty aromatic associated with raspberries."
+Blueberry,Fruity-Blueberry,Fruity-Berry-Blueberry,Berry,-Berry-,"The slightly dark, fruity, sweet, slightly sour, musty, dusty, floral aromatic associated with blueberry."
+Blackberry,Fruity-Blackberry,Fruity-Berry-Blackberry,Berry,-Berry-,"The sweet, dark, fruity, floral, slightly sour, somewhat woody aromatic associated with blackberries."
+Dried Fruit,Fruity-Dried Fruit,Fruity-Dried Fruit,,,An aromatic impression of dark fruit that is sweet and slightly brown and is associated with dried plums and raisins.
+Raisin,Fruity-Raisin,Fruity-Dried Fruit-Raisin,Dried Fruit,-Dried Fruit-,"The concentrated, sweet, somewhat sour, brown, fruity, floral aromatic characteristic of dried grapes."
+Prune,Fruity-Prune,Fruity-Dried Fruit-Prune,Dried Fruit,-Dried Fruit-,"The sweet, slightly brown, floral, musty and overripe aromatic impression of dark fruit associated with dried plums."
+Other Fruit,Fruity-Other Fruit,Fruity-Other Fruit,,,"A sweet, light, fruity, somewhat floral, sour, or green aromatic that may include apples, grapes, peaches, pears, or cherries."
+Apple,Fruity-Apple,Fruity-Other Fruit-Apple,Other Fruit,-Other Fruit-,"A sweet, light, fruity, somewhat floral aromatic commonly associated with fresh or processed apples."
+Pear,Fruity-Pear,Fruity-Other Fruit-Pear,Other Fruit,-Other Fruit-,"The sweet, slightly floral, musty, woody, fruity aromatic associated with pears."
+Peach,Fruity-Peach,Fruity-Other Fruit-Peach,Other Fruit,-Other Fruit-,"The floral, perfuming, fruity, sweet, slightly sour aromatic associated with peaches."
+Grape,Fruity-Grape,Fruity-Other Fruit-Grape,Other Fruit,-Other Fruit-,"The sweet, fruity, floral, slightly sour, musty aromatic commonly associated with grapes."
+Cherry,Fruity-Cherry,Fruity-Other Fruit-Cherry,Other Fruit,-Other Fruit-,"The sour, fruity, slightly bitter, floral aromatic associated with cherries."
+Pomegranate,Fruity-Pomegranate,Fruity-Other Fruit-Pomegranate,Other Fruit,-Other Fruit-,"A sour, sweet fruity aromatic that may be somewhat dark, musty and earthy, reminiscent of dark fruits and root vegetables such as beets and carrots; may also have an astringent mouthfeel."
+Coconut,Fruity-Coconut,Fruity-Other Fruit-Coconut,Other Fruit,-Other Fruit-,"The slightly sweet, nutty, somewhat woody aromatic associated with coconut."
+Pineapple,Fruity-Pineapple,Fruity-Other Fruit-Pineapple,Other Fruit,-Other Fruit-,"The sweet, slightly sharp, fruity aromatic associated with pineapple."
+Citrus Fruit,Fruity-Citrus Fruit,Fruity-Citrus Fruit,,,"A citric, sour, astringent, slightly sweet, peely, and somewhat floral aromatic that may include lemons, limes, grapefruits, or oranges."
+Lemon,Fruity-Lemon,Fruity-Citrus Fruit-Lemon,Citrus Fruit,-Citrus Fruit-,"The citric, sour, astringent, slightly sweet, peely and somewhat floral aromatic associated with lemon."
+Grapefruit,Fruity-Grapefruit,Fruity-Citrus Fruit-Grapefruit,Citrus Fruit,-Citrus Fruit-,"The citric, sour, bitter, astringent, peely, sharp, slightly sweet aromatic associated with grapefruit."
+Orange,Fruity-Orange,Fruity-Citrus Fruit-Orange,Citrus Fruit,-Citrus Fruit-,"The citric, sweet, floral, slightly sour aromatic associated with oranges, which may include bitter, peely, and astringent notes."
+Lime,Fruity-Lime,Fruity-Citrus Fruit-Lime,Citrus Fruit,-Citrus Fruit-,"The citric, sour, astringent, bitter, green, peely, sharp and somewhat floral aromatic associated with limes."
+Sour,Sour/Acid-Sour,Sour/Acid-Sour,,,The fundamental taste factor associated with a citric acid solution.
+Sour Aromatics,Sour/Acid-Sour Aromatics,Sour/Acid-Sour-Sour Aromatics,Sour,-Sour-,An aromatic associated with the impression of a sour product.
+Acetic acid,Sour/Acid-Acetic acid,Sour/Acid-Sour-Acetic acid,Sour,-Sour-,"A sour, astringent, slightly pungent aromatic associated with vinegar."
+Butyric acid,Sour/Acid-Butyric acid,Sour/Acid-Sour-Butyric acid,Sour,-Sour-,"A sour, fermented-dairy aromatic associated with certain aged cheeses such as Parmesan."
+Isovaleric acid,Sour/Acid-Isovaleric acid,Sour/Acid-Sour-Isovaleric acid,Sour,-Sour-,"A pungent, sour aromatic associated with sweaty, perspiration-generated foot odor and certain aged cheeses such as Romano."
+Citric acid,Sour/Acid-Citric acid,Sour/Acid-Sour-Citric acid,Sour,-Sour-,"A mild, clean, sour aromatic with slight citrus notes accompanied by astringency."
+Malic acid,Sour/Acid-Malic acid,Sour/Acid-Sour-Malic acid,Sour,-Sour-,"A sour, sharp, somewhat fruity aromatic accompanied by astringency."
+Alcohol,Alcohol/Fermented-Alcohol,Alcohol/Fermented-Alcohol,,,"A colorless, pungent, chemical-like aromatic associated with distilled spirits or grain products."
+Whiskey,Alcohol/Fermented-Whiskey,Alcohol/Fermented-Whiskey,,,The aromatic associated with distilled products from fermented grain mash.
+Winey,Alcohol/Fermented-Winey,Alcohol/Fermented-Winey,,,"The sharp, pungent, somewhat fruity, alcohol-like aromatic associated with wine."
+Fermented,Alcohol/Fermented-Fermented,Alcohol/Fermented-Fermented,,,"The pungent, sweet, slightly sour, sometimes yeasty, alcohol-like aromatic characteristic of fermented fruits or sugar or over-proofed dough."
+Overripe/Near fermented,Alcohol/Fermented-Overripe/Near fermented,Alcohol/Fermented-Overripe/Near fermented,,,"The sweet, slightly sour, damp, musty/earthy aromatic characteristic of fruit or vegetable past their optimum ripeness."
+Olive Oil,Green/Vegetative-Olive Oil,Green/Vegetative-Olive Oil,,,"A light, oily aromatic which may have buttery, green, peppery, bitter, and sweet notes."
+Raw,Green/Vegetative-Raw,Green/Vegetative-Raw,,,An aromatic associated with uncooked products.
+Under–ripe,Green/Vegetative-Under–ripe,Green/Vegetative-Vegetative-Under–ripe,Vegetative,-Vegetative-,An aromatic found in green/under-ripe fruit.
+Peapod,Green/Vegetative-Peapod,Green/Vegetative-Vegetative-Peapod,Vegetative,-Vegetative-,"Green aromatic that is sweet, beany, fresh, raw, and musty/earthy."
+Green,Green/Vegetative-Green,Green/Vegetative-Vegetative-Green,Vegetative,-Vegetative-,"An aromatic characteristic of fresh, plant-based material. Attributes may include leafy, viney, unripe, grassy, and peapod."
+Fresh,Green/Vegetative-Fresh,Green/Vegetative-Vegetative-Fresh,Vegetative,-Vegetative-,"A green aromatic associated with newly cut grass and leafy plants, characterized by a sweet and pungent character."
+Dark Green,Green/Vegetative-Dark Green,Green/Vegetative-Vegetative-Dark Green,Vegetative,-Vegetative-,"The aromatic commonly associated with cooked green vegetables such as spinach, kale, or green beans that may include bitter, sweet, dusty, musty, or earthy elements, and may have a dark, heavy impression."
+Vegetative,Green/Vegetative-Vegetative,Green/Vegetative-Vegetative,,,"Sharp, slightly pungent aromatic associated with green plant or vegetable matter such as parsley, spinach, or peapod."
+Hay-like,Green/Vegetative-Hay-like,Green/Vegetative-Vegetative-Hay-like,Vegetative,-Vegetative-,"The lightly sweet, dry, dusty aromatic with slight green character associated with dry grasses."
+Herb-like,Green/Vegetative-Herb-like,Green/Vegetative-Vegetative-Herb-like,Vegetative,-Vegetative-,"The aromatic commonly associated with green herbs that may be characterized as sweet, slightly pungent, and slightly bitter. May or may not include green or brown notes."
+Beany,Green/Vegetative-Beany,Green/Vegetative-Beany,,,"An aromatic characteristic of beans and bean products that contains musty/earthy, musty/dusty, sour aromatic, bitter aromatic, starchy, and green/peapod, nutty or brown elements."
+Stale,Stale/Papery-Stale,Stale/Papery-Stale,,,The aromatic characterized by a lack of freshness.
+Papery,Stale/Papery-Papery,Stale/Papery-Papery,,,The aromatic associated with white paper cups.
+Cardboard,Stale/Papery-Cardboard,Stale/Papery-Cardboard,,,The aromatic associated with cardboard or paper packaging.
+Musty/earthy,Earthy-Musty/earthy,Earthy-Musty/earthy,,,"The somewhat sweet, heavy aromatic associated with decaying vegetation and damp, black soil."
+Musty/dusty,Earthy-Musty/dusty,Earthy-Musty/dusty,,,"The aromatic associated with dry, closed-air spaces such as attics and closets. May have elements of dry, musty, papery, dry soil, or grain."
+Moldy/damp,Earthy-Moldy/damp,Earthy-Moldy/damp,,,"The aromatic associated with damp, closed spaces or basements. May be musty, sharp, and slightly green."
+Phenolic,Earthy-Phenolic,Earthy-Phenolic,,,"The aromatic described as damp, musty, and like animal hide. Reminiscent of a tack room."
+Animalic,Earthy-Animalic,Earthy-Animalic,,,A combination of the aromatics associated with farm animals and live-animal habitation.
+Meaty/brothy,Earthy-Meaty/brothy,Earthy-Meaty/brothy,,,"The aromatic associated with boiled meat, soup, or stock, with weak meaty notes."
+Woody,Earthy-Woody,Earthy-Woody,,,"The sweet, brown, musty, dark aromatic associated with a bark of a tree."
+Bitter,Chemical-Bitter,Chemical-Bitter,,,The fundamental taste factor associated with a caffeine solution.
+Salty,Chemical-Salty,Chemical-Salty,,,A fundamental taste factor of which sodium chloride is typical.
+Medicinal,Chemical-Medicinal,Chemical-Medicinal,,,"A clean, sterile aromatic characteristic of antiseptic-like products such as Band-Aids, alcohol, and iodine."
+Rubber,Chemical-Rubber,Chemical-Rubber,,,"A dark, heavy, slightly sharp, and pungent aromatic associated with rubber."
+Petroleum,Chemical-Petroleum,Chemical-Petroleum,,,"A specific chemical aromatic associated with crude oil and its refined products, which have heavy oil characteristics."
+Skunky,Chemical-Skunky,Chemical-Skunky,,,A combination of aromatics associated with skunks.
+Tobacco,Roasted-Tobacco,Roasted-Tobacco,,,"The brown, slightly sweet, slightly pungent aromatic associated with cured tobacco."
+Pipe tobacco,Roasted-Pipe tobacco,Roasted-Pipe tobacco,,,"The brown, sweet, slightly pungent, fruity, floral, spicy aromatic associated with cured tobacco."
+Acrid,Roasted-Acrid,Roasted-Burnt-Acrid,Burnt,-Burnt-,"The sharp, pungent, bitter, acidic aromatic associated with products that are excessively roasted or browned."
+Ashy,Roasted-Ashy,Roasted-Burnt-Ashy,Burnt,-Burnt-,"The dry, dusty, dirty, smoky aromatic associated with the residual of burnt products."
+Burnt,Roasted-Burnt,Roasted-Burnt,,,"The dark brown impression of an over-cooked or over-roasted product that can be sharp, bitter, and sour."
+Smoky,Roasted-Smoky,Roasted-Burnt-Smoky,Burnt,-Burnt-,"An acute, pungent aromatic that is a product of the combustion of wood, leaves, or a non-natural product."
+Roasted,Roasted-Roasted,Roasted-Roasted,,,Dark brown impression characteristic of products cooked to a high temperature by dry heat. Does not include bitter or burnt notes.
+"Brown, Roast","Roasted-Brown, Roast","Roasted-Burnt-Brown, Roast",Burnt,-Burnt-,"A rich, full, round aromatic impression always characterized as some degree of darkness, generally associated with attributes such as toasted, nutty, roasted, and sweet."
+Grain,Cereal-Grain,Cereal-Grain,,,"The light brown, dusty, musty, sweet aromatic associated with grains."
+Malt,Cereal-Malt,Cereal-Malt,,,"The light brown, dusty, musty, sweet, sour and or slightly fermented aromatic associated with grains."
+Pungent,Spices-Pungent,Spices-Pungent,,,"A sharp, physically penetrating sensation in the nasal cavity."
+Pepper,Spices-Pepper,Spices-Pepper,,,"The spicy, pungent, musty, and woody aromatic characteristic of ground black pepper."
+Anise,Spices-Anise,Spices-Brown Spice-Anise,Brown Spice,-Brown Spice-,"A pungent, sweet, brown, caramelized aromatic that may contain petroleum, medicinal, and floral notes."
+Nutmeg,Spices-Nutmeg,Spices-Brown Spice-Nutmeg,Brown Spice,-Brown Spice-,"A wet, brown, woody, pungent, petroleum-like, heavy aromatic with a slightly lemony impression."
+Brown Spice,Spices-Brown Spice,Spices-Brown Spice,,,"The sweet, brown aromatic associated with spices such as cinnamon, clove, nutmeg, and allspice."
+Cinnamon,Spices-Cinnamon,Spices-Brown Spice-Cinnamon,Brown Spice,-Brown Spice-,"A sweet, brown, slightly woody, slightly pungent, spicy aromatic."
+Clove,Spices-Clove,Spices-Brown Spice-Clove,Brown Spice,-Brown Spice-,"A sweet, brown, spicy, pungent, floral, citrus, medicinal, and slightly minty aromatic."
+Nutty,Nutty-Nutty,Nutty-Nutty,,,"A slightly sweet, brown, woody, oily, musty, astringent, and bitter aromatic commonly associated with nuts, seeds, beans, and grains."
+Almond,Nutty-Almond,Nutty-Nutty-Almond,Nutty,-Nutty-,"A sweet, light brown, woody, and buttery aromatic with floral and fruity notes that may include rose, cherry, and apricot. It is also astringent and may be slightly smoky."
+Hazelnut,Nutty-Hazelnut,Nutty-Nutty-Hazelnut,Nutty,-Nutty-,"A woody, brown, sweet, musty/earthy, slightly cedar aromatic. May include floral, beany, oily, astringent, and bitter flavor notes."
+Peanuts,Nutty-Peanuts,Nutty-Nutty-Peanuts,Nutty,-Nutty-,"A sweet, light brown, oily, somewhat musty/dusty, beany aromatic that may be slightly astringent."
+Chocolate,Cocoa-Chocolate,Cocoa-Cocoa-Chocolate,Cocoa,-Cocoa-,"A blend of cocoa, including cocoa butter and dark roast aromatics at varying intensities."
+Cocoa,Cocoa-Cocoa,Cocoa-Cocoa,,,"A brown, sweet, dusty, musty, often bitter aromatic associated with cocoa bean, powdered cocoa and chocolate bars."
+Dark Chocolate,Cocoa-Dark Chocolate,Cocoa-Cocoa-Dark Chocolate,Cocoa,-Cocoa-,"A high-intensity blend of cocoa and cocoa butter that may include dark roast, spicy, burnt, and musty notes with increased astringency and bitterness."
+Sweet,Sweet-Sweet,Sweet-Sweet,,,A fundamental taste factor of which sucrose is typical.
+Molasses,Sweet-Molasses,Sweet-Brown Sugar-Molasses,Brown Sugar,-Brown Sugar-,"Dark, caramelized top notes that may include slightly sharp, acrid, and sulfur notes characteristic of molasses."
+Maple Syrup,Sweet-Maple Syrup,Sweet-Brown Sugar-Maple Syrup,Brown Sugar,-Brown Sugar-,"A woody, sweet, caramelized, brown, slightly green aromatic associated with maple syrup."
+Brown Sugar,Sweet-Brown Sugar,Sweet-Brown Sugar,,,"A rich, full, round, sweet aromatic impression characterized by some degree of darkness."
+Caramelized,Sweet-Caramelized,Sweet-Brown Sugar-Caramelized,Brown Sugar,-Brown Sugar-,"A round, full-bodied, medium brown, sweet aromatic associated with cooked sugars and other carbohydrates. Does not include burnt or scorched notes."
+Honey,Sweet-Honey,Sweet-Brown Sugar-Honey,Brown Sugar,-Brown Sugar-,"Sweet, light brown, slightly spicy aromatic associated with honey."
+Vanilla,Sweet-Vanilla,Sweet-Vanilla,,,"A woody, slightly chemical aromatic associated with vanilla bean, which may include brown, beany, floral, and spicy notes."
+Vanillin,Sweet-Vanillin,Sweet-Vanillin,,,"An extremely sweet, non-natural aromatic associated with vanilla, cotton candy, and marshmallows."
+Sweet Aromatics,Sweet-Sweet Aromatics,Sweet-Sweet Aromatics,,,An aromatic associated with the impression of a sweet substance.
+Overall Sweet,Sweet-Overall Sweet,Sweet-Overall Sweet,,,The perception of a combination of sweet taste and aromatics.
+Floral,Floral-Floral,Floral-Floral,,,"A sweet, light, slightly fragrant aromatic associated with fresh flowers."
+Rose,Floral-Rose,Floral-Rose,,,"A sweet, soft, slightly musty/dusty floral fragrance associated with fresh or dried roses."
+Jasmine,Floral-Jasmine,Floral-Floral-Jasmine,Floral,-Floral-,"An intense, slightly pungent, sweet, floral aromatic with underlying green, musty/dusty notes."
+Chamomile,Floral-Chamomile,Floral-Floral-Chamomile,Floral,-Floral-,"The sweet, slightly floral/fruity, somewhat woody green associated with chamomile."
+Black Tea,Floral-Black Tea,Floral-Floral-Black Tea,Floral,-Floral-,"A somewhat brown, musty, dried plant and dried bark aromatic associated with the oxidization of tea leaves."
