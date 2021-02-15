@@ -29,7 +29,7 @@ library(crosstalk)
 ```{r}
 haiti <- readxl::read_xlsx("C:/W_shortcut/coffee_roasting/21-02-09_2015_Haiti_Baptiste.xlsx", skip = 3) %>% select(1:6) %>% rename(change_BT = "Δ BT")
 # haiti$Time2 %>% typeof()
-haiti <- haiti %>% mutate(Time2 = lubridate::ms(Time2))
+haiti <- haiti %>% mutate(Time2 = lubridate::ms(Time2), Time1 = lubridate::ms(Time1))
 # haiti$Time2 <- as.POSIXct(haiti$Time2, format="%M:%S")
 ```
 ```{r}
@@ -148,13 +148,15 @@ time_max = max(as_datetime(haiti$Time2), na.rm = TRUE)
 dry_end = as_datetime(haiti$Time2[grepl("Dry End", haiti$Event), "Time2"])
 first_crack_start = as_datetime(haiti$Time2[grepl("FCs", haiti$Event), "Time2"])
 first_crack_end = as_datetime(haiti$Time2[grepl("FCe", haiti$Event), "Time2"])
+drop_start = as_datetime(haiti$Time2[grepl("Drop", haiti$Event), "Time2"])
+max_temp = 500 # Highest temp in chart
 
-plot_ly(
+plot_ly( # BT Line
   haiti,
   type = 'scatter',
   mode = 'lines',
   x = ~ lubridate::as_datetime(Time2),
-  line = list(color = "#00007f"),
+  line = list(color = "#4DB848"),
   # x = ~seq(ms("00:00"), ms("10:10")),
   # x = ~ lubridate::ms(Time2),
   # x = ~ lubridate::as_datetime(Time1),
@@ -164,22 +166,18 @@ plot_ly(
   showlegend = FALSE,
   name = "BT"
 ) %>%
-  add_trace(
+  add_trace( # ET Line
     mode = 'lines',
     x = ~ lubridate::as_datetime(Time2),
-    # x = ~ lubridate::ms(Time2),
-    # x = ~ lubridate::as_datetime(Time2),
     y = ~ ET,
-    line = list(color = "#ff0000"),
+    line = list(color = "#D50032"),
     name = "ET"
   ) %>%
-  add_trace(
+  add_trace( # Change BT Line
     mode = 'lines',
     x = ~ lubridate::as_datetime(Time2),
-    # x = ~ lubridate::ms(Time2),
-    # x = ~ lubridate::as_datetime(Time2),
     y = ~ change_BT,
-    line = list(color = "#0000ff"),
+    line = list(color = "#428BCA"),
     name = "\u0394BT",
     yaxis = "y2"
   ) %>% layout(hovermode = "x unified") %>% 
@@ -197,9 +195,12 @@ plot_ly(
     font = list(size = 12, color = "#ffffff"),
     bgcolor = ~ event_color
   ) %>%
-  layout(
+  layout( # The right side y-axis
     yaxis2 = list(
-    tickfont = list(color = "#0000ff"),
+    zeroline = F,
+    showline = F,
+    showgrid = F,
+    tickfont = list(color = "#428BCA"),
     ticksuffix = "\u00b0F",
     overlaying = "y",
     side = "right",
@@ -209,55 +210,46 @@ plot_ly(
       list(
         type = rect,
         x0 = time_zero,
-        x1 = time_max,
+        x1 = dry_end,
         y0 = 0,
-        y1 = 100,
+        y1 = max_temp,
         line = list(color = '#d9ecd9'),
         fillcolor = '#d9ecd9',
-        opacity = 0.8,
+        opacity = 0.2,
         layer = 'below'
       ),
       list(
         type = rect,
-        x0 = time_zero,
-        x1 = time_max,
-        y0 = 100,
-        y1 = 300,
+        x0 = dry_end,
+        x1 = first_crack_start,
+        y0 = 0,
+        y1 = max_temp,
         line = list(color = '#fff1d9'),
         fillcolor = '#fff1d9',
-        opacity = 0.8,
-        layer = 'below'
-      ),
-      list(
-        type = rect,
-        x0 = time_zero,
-        x1 = time_max,
-        y0 = 300,
-        y1 = 500,
-        line = list(color = '#efe8e0'),
-        fillcolor = '#efe8e0',
-        opacity = 0.8,
+        opacity = 0.2,
         layer = 'below'
       ),
       list(
         type = rect,
         x0 = first_crack_start,
-        x1 = first_crack_end,
+        x1 = drop_start,
         y0 = 0,
         y1 = 500,
-        line = list(color = '#ebe134'),
-        fillcolor = '#ebe134',
+        line = list(color = '#efe8e0'),
+        fillcolor = '#efe8e0',
         opacity = 0.2,
         layer = 'below'
       )
     ),
     xaxis = list(
-      gridcolor = toRGB("gray85"),
+      # gridcolor = toRGB("gray85"),
       title = "",
       zeroline = F,
       showline = F,
-      showgrid = T,
+      showgrid = F,
       tick0 = time_zero,
+      ticks = "inside",
+      tickcolor = "grey80",
       tickformat = "%M:%S",
       dtick = 30000 # Tick every 30 seconds
     ),
@@ -275,13 +267,57 @@ plot_ly(
       t = 0
     )
   )
+
+haiti %>% filter(!is.na(Event)) %>% DT::datatable()
 ```
 
 ```{r}
-haiti$Time2 %>% as_datetime()
-as_datetime(haiti$Time2) %>% year()
 
-haiti %>% filter( year((Time2)) == 2000) 
+        time_zero = as_datetime("1970-01-01 00:00:00 UTC")
+        time_max = max(as_datetime(haiti$Time2), na.rm = TRUE)
+        dry_end = as_datetime(haiti$Time2[grepl("Dry End", haiti$Event), "Time2"])
+        first_crack_start = as_datetime(haiti$Time2[grepl("FCs", haiti$Event), "Time2"]) 
+        first_crack_end = as_datetime(haiti$Time2[grepl("FCe", haiti$Event), "Time2"])
+        drop_start = as_datetime(haiti$Time2[grepl("Drop", haiti$Event), "Time2"])
+        max_temp = 500 # Highest temp in chart
+
+        # Get temps are event times, returns a list
+get_roasting_profile_data <- function(df) {
+  chart_analysis <- c(
+    time_zero = "1970-01-01 00:00:00 UTC",
+    charge_start = format(as_datetime(df$Time2[grepl("Charge", df$Event), "Time2"]), format = "%M:%S"),
+    time_max = format(max(as_datetime(df$Time2), na.rm = TRUE), format = "%M:%S"),
+    dry_end = format(as_datetime(df$Time2[grepl("Dry End", df$Event), "Time2"]), format = "%M:%S"),
+    first_crack_start = format(as_datetime(df$Time2[grepl("FCs", df$Event), "Time2"]), format =  "%M:%S"),
+    first_crack_end = format(as_datetime(df$Time2[grepl("FCe", df$Event), "Time2"]), format = "%M:%S"),
+    drop_start = format(as_datetime(df$Time2[grepl("Drop", df$Event), "Time2"]), format = "%M:%S"),
+    # max_temp = 500,
+    # Highest temp in chart
+    end_temp = as.numeric(df[grepl("Drop", df$Event), "BT"])
+  ) %>% as.list()
+  
+  chart_analysis
+}
+chart_analysis <- get_roasting_profile_data(haiti)
+
+
+# Do calculations, finalize numbers and time to make into a table
+chart_analysis <-
+chart_analysis %>% as.data.frame() %>% mutate(duration = ms(drop_start)-ms(charge_start), dev_time = ms(drop_start) - ms(first_crack_start), duration = format(as_datetime(duration), format="%M:%S"),dev_ratio = paste0(round(ms(dev_time) *100 / ms(duration),1),"%"), dev_time = format(as_datetime(dev_time), format="%M:%S"), end_temp = round(as.numeric(end_temp), 1)) %>% mutate_all(as.character) %>% select("First crack" = first_crack_start, "Roast duration" = duration, "Development time" = dev_time, "Dev. time ratio" = dev_ratio, "End temp." = paste0(end_temp,"\u00b0F"))
+
+library(formattable)
+# make a datatable for output
+chart_analysis %>% pivot_longer(cols = 1:5, values_to = "data") %>% formattable(., list(
+  name = formatter("span", style = "color:#AAAAAA; font-size:14px; font-weight:bold;"),
+  data = formatter("span", style = "color:grey;")
+))
+# area()~formatter("span", style = " border:0;")
+heae(chart_analysis)
+cat("<style>th {border: none;
+ display: none;
+}</style>
+")
+# R <- strptime(R, format="%M:%S") Converts to POSIXt, or use format(R, format="%M:%S")
 ```
 
 
@@ -302,21 +338,26 @@ coffee = readxl::read_xlsx('C:/W_shortcut/coffee_roasting/data/coffee-flavors_le
 ```{r}
 library(leaflet)
 
-qquery <- highlight_key(coffee)
+qquery <- highlight_key(haiti)
 
-p <-  plot_ly(coffee,
-            type='sunburst',
-            ids=coffee$ids,
-            labels=coffee$labels,
-            parents=coffee$parents,
-            domain=list(column=1),
-            maxdepth=2,
-            insidetextorientation='radial'
-            # markers = list(colors = ("red"))
-        ) %>%
-  highlight("plotly_hover", dynamic = TRUE)
+p <- plot_ly(
+  qquery,
+  type = 'scatter',
+  mode = 'markers',
+  x = ~ lubridate::as_datetime(Time2),
+  line = list(color = "#00007f"),
+  # x = ~seq(ms("00:00"), ms("10:10")),
+  # x = ~ lubridate::ms(Time2),
+  # x = ~ lubridate::as_datetime(Time1),
+  y = ~ BT,
+  # hovertemplate = paste('%{y: .1f}\u00b0F', '<br>%{x}<br>'),
+  hovertemplate = '%{y: .1f}\u00b0F',
+  showlegend = FALSE,
+  name = "BT"
+) %>%
+  highlight("plotly_selected", dynamic = TRUE)
 
-map <- DT::datatable(coffee)
+map <- DT::datatable(qquery)
 
 # persistent selection can be specified via options()
 withr::with_options(

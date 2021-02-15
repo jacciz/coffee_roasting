@@ -3,7 +3,7 @@
     "path": "C:/W_shortcut/coffee_roasting/global.R",
     "project_path": "global.R",
     "type": "r_source",
-    "hash": "4123334316",
+    "hash": "3187013382",
     "contents": "",
     "dirty": false,
     "created": 1613180358504.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "24,19",
-        "scrollLine": "0"
+        "cursorPosition": "56,71",
+        "scrollLine": "28"
     },
     "folds": "",
-    "lastKnownWriteTime": 1613256565,
+    "lastKnownWriteTime": 1613352429,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1613256565541,
+    "last_content_update": 1613352429690,
     "read_only": false,
     "read_only_alternatives": []
 }
