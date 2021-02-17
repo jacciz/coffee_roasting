@@ -1,0 +1,5 @@
+list1 <- c("filename" = "fn") %>% as.list()
+list2 <- c("filename2" = "fn2") %>% as.list()
+
+list1,list2
+unlist(c(list1,list2))

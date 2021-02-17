@@ -2,8 +2,9 @@ CREATE TABLE roast_profiles(
     [primary_key] INTEGER NOT NULL PRIMARY KEY,
     [roast_date] [DATE] NULL,
     [name] NVARCHAR(50) NULL,
-    [weight_before] DOUBLE(8,2) NULL,
-    [weight_after] DOUBLE(8,2) NULL,
+    [weight_before] NUMERIC(8,2) NULL,
+    [weight_after] NUMERIC(8,2) NULL,
+    [unit_of_measure]
     [roast_machine] NVARCHAR(30) NULL,
     [roast_farm] NVARCHAR(50) NULL,
     [country] NVARCHAR(50) NULL,
