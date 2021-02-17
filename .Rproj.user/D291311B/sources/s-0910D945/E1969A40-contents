@@ -36,7 +36,7 @@ time_zero = as_datetime("1970-01-01 00:00:00 UTC")
 # https://towardsdatascience.com/analyzing-sweet-marias-coffee-cupping-metrics-3be460884bb1
 arab = read.csv('data/arabica_data_cleaned.csv')
 coffee_flavors = read.csv("data/sunburst-coffee-flavors-complete.csv")
-coffee_cupping_tasting = readxl::read_xlsx('C:/W_shortcut/coffee_roasting/data/coffee-flavors_lexicon.xlsx')
+coffee_cupping_tasting = readxl::read_xlsx('/data/coffee-flavors_lexicon.xlsx')
 # coffee_cupping_tasting = read.csv('data/coffee-flavors.csv')
 
 

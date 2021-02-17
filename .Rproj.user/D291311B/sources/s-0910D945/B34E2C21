@@ -3,7 +3,7 @@
     "path": "C:/W_shortcut/coffee_roasting/server.R",
     "project_path": "server.R",
     "type": "r_source",
-    "hash": "537754857",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1613179367154.0,
@@ -12,8 +12,8 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "615,6",
-        "scrollLine": "601"
+        "cursorPosition": "30,61",
+        "scrollLine": "0"
     },
     "folds": "",
     "lastKnownWriteTime": 1613529603,

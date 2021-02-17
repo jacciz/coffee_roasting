@@ -27,7 +27,7 @@ library(crosstalk)
 ```
 
 ```{r}
-haiti <- readxl::read_xlsx("C:/W_shortcut/coffee_roasting/21-02-09_2015_Haiti_Baptiste.xlsx", skip = 3) %>% select(1:6) %>% rename(change_BT = "Δ BT")
+# haiti <- readxl::read_xlsx("C:/W_shortcut/coffee_roasting/21-02-09_2015_Haiti_Baptiste.xlsx", skip = 3) %>% select(1:6) %>% rename(change_BT = "Δ BT")
 # haiti$Time2 %>% typeof()
 haiti <- haiti %>% mutate(Time2 = lubridate::ms(Time2), Time1 = lubridate::ms(Time1))
 # haiti$Time2 <- as.POSIXct(haiti$Time2, format="%M:%S")
@@ -322,8 +322,8 @@ cat("<style>th {border: none;
 
 
 ```{r tasting, fig.height= 10, fig.width=10}
-coffee = read.csv('C:/W_shortcut/coffee_roasting/data/coffee-flavors_counterculture.csv')
-coffee = readxl::read_xlsx('C:/W_shortcut/coffee_roasting/data/coffee-flavors_lexicon.xlsx')
+# coffee = read.csv('C:/W_shortcut/coffee_roasting/data/coffee-flavors_counterculture.csv')
+# coffee = readxl::read_xlsx('C:/W_shortcut/coffee_roasting/data/coffee-flavors_lexicon.xlsx')
         plot_ly() %>% add_trace(
             type='sunburst',
             ids=coffee$ids,
