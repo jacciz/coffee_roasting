@@ -1,0 +1,13 @@
+name: coffee_roasting
+title: coffee_roasting
+username:
+account: jacciz
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3649675
+bundleId: 4232717
+url: https://jacciz.shinyapps.io/coffee_roasting/
+when: 1613530406.33149
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: 21-01-13_1735_PanamaCaturra.csv|21-02-09_2015_Haiti_Baptiste.csv|README.md|roasting.Rmd|background-jobs/run_app.R
