@@ -43,6 +43,7 @@ shinyUI(
                      plotlyOutput("coffee_tasting", height = "1000px"),
                      # textOutput('hover')
                      textOutput('click')
+                     # textInput("names")
                  ),
                  column(width = 6,
                         plotlyOutput("coffee_flavors", height = "1000px"))
@@ -100,15 +101,13 @@ shinyUI(
         )
     ),
     #  -------------- Upload Data Tab --------------------
-    shinyFeedback::useShinyFeedback(), # Need this in ui
+    shinyFeedback::useShinyFeedback(), # Need this in ui for Feedback to work
     tabPanel(
- 
         "Import Data",
         box(titlePanel("Input Profile"),
             width = 4,
             style = "text-align:justify;color:black;background-color:rgb(245,245,245);padding:15px;border-radius:10px",
             fluidRow(
-                
                 column(3, shiny::dateInput("roast_date", "Roast date", value = Sys.Date(), format = "M d, yyyy", autoclose=TRUE)),
                 # input sys date
                 column(3, textInput("name", "Your name")),
@@ -128,10 +127,11 @@ shinyUI(
                 column(3, selectInput("variety", "Variety", choices = coffee_varieties_arabica, multiple = TRUE)),
                 column(3, textAreaInput("roast_notes", "Notes")),
                 
-            ),
-            fluidRow(shiny.semantic::fileInput('roast_curves_upload', 'upload xlsx', accept = '.xlsx', width = "400px"),
+            ), # https://mastering-shiny.org/action-transfer.html
+            fluidRow(shiny::fileInput(inputId = 'roast_curves_upload', 'Upload Artisan (.alog)', accept = '.alog'),
                 actionButton("update_record", "Submit", class = "btn-primary")
-            )
+            ),
+            formattableOutput("uploaded_data_preview")
         )
     )
     #  -------------- More Tabs -dropdown --------------------

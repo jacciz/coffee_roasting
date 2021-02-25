@@ -27,6 +27,93 @@ library(crosstalk)
 ```
 
 ```{r}
+
+open_profile_as_json <-
+  function(alog_input = input$roast_curves_upload$datapath, country = input$country, region = input$region) {
+    
+    # Reads and puts it in a long string
+    sub <- readLines(alog_input)
+
+    # Must replace ' and change True/False so it has quotes in order to read as a JSON
+    sub <- gsub("\\'", '"', sub)
+    sub <- gsub("True", '\"True\"', sub)
+    sub <- gsub("False", '\"False\"', sub)
+    
+    # Convert file from JSON in R format
+    profile <- jsonlite::fromJSON(sub)
+
+    # Create filename based on roast date, country and region
+    filename <- sprintf(
+      "%s%s-%s-%s-%s.json",
+      "/roast_profiles_json/",
+      # location to save
+      country,
+      region,
+      profile$roastisodate,
+      gsub(":", "-", profile$roasttime))
+    
+    # Also save to /data
+    write(sub, paste0("C:/W_shortcut/coffee_roasting/",filename))
+
+    # Need to get the entire filename and make a list so we can append to all_inputs_to_save
+    save_filename <- c("filename" = filename) %>% as.list()
+    return(save_filename)
+  }
+
+# json      <- lapply(sub,fromJSON)
+
+# read.csv("C:/W_shortcut/coffee_roasting/data/21-02-17_1840_ZambiaKasama_1stcrack.alog", header = FALSE, quote = "[", sep = ",")
+# jsonlite::read_json("C:/W_shortcut/coffee_roasting/data/21-02-17_1840_ZambiaKasama_1stcrack.alog")
+# fread("C:/W_shortcut/coffee_roasting/data/21-02-17_1840_ZambiaKasama_1stcrack.alog")
+# read.table("C:/W_shortcut/coffee_roasting/data/21-02-17_1840_ZambiaKasama_1stcrack.alog", sep =":")
+
+# True with \"True\"
+library(rjson)
+# json.text <- readLines("C:/W_shortcut/coffee_roasting/data/21-02-17_1840_ZambiaKasama_1stcrack.alog")
+# parse JSON into named list
+sub <- readLines("C:/W_shortcut/coffee_roasting/data/21-02-17_1840_ZambiaKasama_1stcrack.alog")
+sub <- gsub("\\'",'"',sub)
+sub <- gsub("True",'\"True\"',sub)
+sub <- gsub("False",'\"False\"',sub)
+# json      <- lapply(sub,fromJSON)
+json <- fromJSON(sub)
+ms(json$timex)
+mdy(json$roastdate)
+sf <- data.frame(Time1 = json$timex, BT=json$temp1)
+events <- data.frame(eventtime = json$specialevents, event = json$specialeventsStrings)
+ plot_ly(
+            # BT Line
+            sf,
+            type = 'scatter',
+            mode = 'lines',
+            x = ~as_datetime(Time1),
+            line = list(color = "#4DB848"),
+            # x = ~seq(ms("00:00"), ms("10:10")),
+            # x = ~ lubridate::ms(Time2),
+            # x = ~ lubridate::as_datetime(Time1),
+            y = ~ BT,
+            # hovertemplate = paste('%{y: .1f}\u00b0F', '<br>%{x}<br>'),
+            hovertemplate = '%{y: .1f}\u00b0F',
+            showlegend = FALSE,
+            name = "BT"
+        ) %>% 
+    add_annotations(
+      # events,
+                x =  ~as_datetime(events$eventtime),
+                y = ~ 300,
+                text = ~ events$event,
+                # yaxis = "y2",
+                textposition = "top center",
+                arrowhead = .5,
+                arrowwidth = 1,
+                font = list(size = 12)
+                # bgcolor = ~ event_color
+            ) %>% 
+   add_segments( x = ~as_datetime(events$eventtime), xend = ~as_datetime(events$eventtime), y =~ 0, yend=~500,
+                          # opacity = 1,
+                          line = list(dash="dash",
+                                      color = '#AAAAAA',
+                                      width = 2), text = ~as_datetime(events$event))
 # haiti <- readxl::read_xlsx("C:/W_shortcut/coffee_roasting/21-02-09_2015_Haiti_Baptiste.xlsx", skip = 3) %>% select(1:6) %>% rename(change_BT = "Δ BT")
 # haiti$Time2 %>% typeof()
 haiti <- haiti %>% mutate(Time2 = lubridate::ms(Time2), Time1 = lubridate::ms(Time1))
@@ -365,3 +452,8 @@ withr::with_options(
   crosstalk::bscols(widths = c(6, 6), p, map)
 )
 ```
+```{r json flatten}
+js %>% as.data.frame()
+jsonlite::flatten(js)
+```
+

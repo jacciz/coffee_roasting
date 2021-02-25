@@ -14,7 +14,16 @@ library(shinyFeedback) # https://github.com/merlinoa/shinyFeedback and https://m
 # jobs in C:\Users\dotjaz\Documents\RStudio\background-jobs view: rstudioapi::viewer("http://127.0.0.1:5101")
 # traceback() to find error location, add browser() in code to launch debugger
 # breakpoints - debugger tool - press n,c,q
-# use message() glue::glue() str() 
+# use message() glue::glue() str()
+# selectVarServer("var", reactive(input$x)))
+# ctrl .  to find function
+# Testing: https://mastering-shiny.org/scaling-testing.html
+# Performance: https://mastering-shiny.org/performance.html
+
+# list(
+#   name = reactive(input$var),
+#   value = reactive(data()[[input$var]])
+# )
 
 # Use this to show select / hover Plotly data
 renderPlotly2 <-
@@ -44,7 +53,7 @@ addClickBehavior <- "function(el, x){
   el.on('plotly_click', function(data){
     var infotext = data.points.map(function(d){
       console.log(d)
-      return (d.label+', ');
+      return (d.label);
     });
     console.log(infotext)
     Shiny.onInputChange('click_data', infotext)
@@ -117,11 +126,11 @@ server <- function(input, output, session) {
       }
             
     # ------------------------- Reactives  --------------------------------------
-    
-    get_selected_profile <- # Based on country for now
-        reactive({
-            dbReadTable(pool, "roast_profiles") %>% filter(country == input$country)# filter(Org_Name %in% input$health_clinic)
-        })
+    # 
+    # get_selected_profile <- # Based on country for now
+    #     reactive({
+    #         dbReadTable(pool, "roast_profiles") %>% filter(country == input$country)# filter(Org_Name %in% input$health_clinic)
+    #     })
     
     # When selected data changes, table gets updated
     # jittered_iris <- reactive({
@@ -361,6 +370,26 @@ server <- function(input, output, session) {
         input$click_data
     })
     
+    # Accumulate flavor notes when clicked - https://mastering-shiny.org/reactivity-components.html
+    # flavor <- reactiveValues(names = character())
+    # observeEvent(input$click_data, {
+    #   flavor$names <- c(input$click_data, flavor$names)
+    #   updateTextInput(session, "notes", value = "")
+    # })
+    # output$names <- renderText(names())
+    
+    # input = click_data  output = click
+    r <- reactiveValues(click = character())
+    observeEvent(input$click_data, {
+      # print(input$click_data) # works
+      r$click <- union(input$click_data, r$click)
+      print(r$click)# works
+      # updateTextInput(session, "click_data", value = "")
+    })
+    
+    # output$click <- renderText(click())
+
+    
     #  -------------- Coffee Cupping Sunburst --------------------
     output$coffee_tasting <- renderPlotly2({
         coffee_cupping_tasting <- coffee_cupping_tasting %>% mutate(new_label =paste0("<b>",end_name,": ", "</b>",stringr::str_wrap(labels, width = 30)))
@@ -467,7 +496,7 @@ server <- function(input, output, session) {
     observeEvent(input$country, { # Inputs on the form. Be sure fields will be updated under 'fields_to_update_for_contacts'
         # print(filtered_orders_with_contacts())
         # print(input$selected_primary_key)
-        loaded_form_data <- get_selected_profile() #%>% filter(country == input$selected_country) #%>% as.data.frame()
+        # loaded_form_data <- get_selected_profile() #%>% filter(country == input$selected_country) #%>% as.data.frame()
         
         # updateTextInput(inputId = "roast_date", value = loaded_form_data$roast_date)
         # updateTextInput(inputId = "primary_key", value = loaded_form_data$primary_key)
@@ -523,8 +552,18 @@ server <- function(input, output, session) {
     #   )
     # })
     
+    # This check to see if uploaded profile is valid, returns booleon
+    valid_profile_upload <- reactive({
+      if (any(c(
+        length(input$roast_curves_upload$datapath) != 0 &
+        !is.null(input$roast_curves_upload) &
+        str_sub(input$roast_curves_upload$datapath, -5, -1) == ".alog"
+      ))) {
+        return(TRUE)
+      }
+      return(FALSE)
+    })
 
-    
     # When submit button is pushed, save the form data - it doesn't change the data - just saves it ??
     observeEvent(input$update_record, {
       
@@ -541,73 +580,60 @@ server <- function(input, output, session) {
           input$weight_after <= 0,
         "Enter valid number"
       )
+
       feedbackWarning("variety", is.null(input$variety), "Enter variety")
+      
+      # Conditions we want all to be true. Returns true if all are met.
+      is_file_valid <- any(c(length(input$roast_curves_upload$datapath) != 0 &
+                           !is.null(input$roast_curves_upload) &
+                           str_sub(input$roast_curves_upload$datapath, -5, -1) == ".alog")) # Input file must end in .alog
+
       feedbackWarning(
-        "roast_curves_upload",
-        length(input$roast_curves_upload$datapath) == 0 |
-          is.null(input$roast_curves_upload) |
-          str_sub(input$roast_curves_upload$datapath, -5, -1) != ".xlsx"
-        ,
-        "Input xlsx"
+        "roast_curves_upload", !is_file_valid,
+        "Input .alog"
       )
+
       # And then require these to be valid. If they are all valid, code will finally proceed.
       req(
         is.numeric(input$weight_before) & input$weight_before > 0,
         is.numeric(input$weight_after) & input$weight_after > 0,
         !is.null(input$variety),
-        str_sub(input$roast_curves_upload$datapath, -5, -1) == ".xlsx" # Input file must end in .xlsx
+        is_file_valid
       )
+      # sub <- input$roast_curves_upload$datapath
+      # print(sub)
+      # Then open alog, returns a long string
+      opened_json <- open_profile_as_json(alog_input = input$roast_curves_upload$datapath)
       
-      # Then save the xlsx that was uploaded into the server as a csv. We know it is an .xlsx based on the above validation.
-      df <-
-        readxl::read_xlsx(input$roast_curves_upload$datapath, skip = 3) %>% select(1:6) %>% rename(change_BT = "Δ BT")
-      # Create filename based on country, region, and a timestamp to make sure it has a unique filename
-      filename <- sprintf(
-        "%s%s-%s-%s.csv",
-        "roast_profiles_xlsx/",
-        input$country,
-        input$region,
-        format(Sys.time(), "%d-%b-%Y-%H-%M")
-      )
-      write.csv(df, filename)
-      
-      # Need to get the entire filename and make a list so we can append to all_inputs_to_save
-      save_filename <- c("filename" = filename) %>% as.list()
-      
+      # Convert opened JSON into R format :)
+      profile_as_json <- jsonlite::fromJSON(opened_json)
+      # print(profile_as_json) works
+      # Get the filename as where it is saved so we can save and store filename
+      # Returns filename (i.e. data/filename.json)
+      saved_filename <- get_profile_filename(profile_as_json,
+                                country = input$country,
+                                region = input$region)
+
+      # Saves opened JSON profile in the folder. Cannot be an R object.
+      write(opened_json, saved_filename)
+
+      # Make the filename list so we can append to all_inputs_to_save
+      save_filename_list <- c("filename" = saved_filename) %>% as.list()
 
       # Variety is saved as a list, must convert to a string and put string into a list to save to db
       variety_as_char <-
         as.character(input$variety) %>% stringr::str_flatten(., collapse = ", ")
       save_variety <- c("variety" = variety_as_char) %>% as.list()
       
-      # Combine filename and variety to all inputs in order to dump them in db under 1 query
+      # Combine variety and filename to all inputs (which form_data_contact_db runs) in order to dump them in db under 1 sql query
+      # These all must be in fields_to_update_for_contacts in order to save
       all_inputs_to_save <-
-        unlist(c(save_variety, save_filename, form_data_contact_db()))
-      
-      # Saves all the inputs in fields_to_update_for_contacts
+        unlist(c(save_variety, save_filename_list, form_data_contact_db()))
+
+      # Then save all the inputs!
       record_status <-
         upload_roast_profiles(all_inputs_to_save, "roast_profiles") # name of db table
       
-      
-      # list_data <-
-      #   loadData(c("primary_key"), "roast_profiles") %>% as.data.frame() # get key
-      
-      # if (record_status == "inserted.") {
-      #   # Dont need this??
-      #   updateTextInput(session, "primary_key", value = max(list_data$primary_key))
-      # }
-      # What does this do?
-      # list_data <- rbind(data.frame("primary_key" = 0, "roast_date" = Sys.Date(), "country" = "None"),list_data) # Adds a new row of empty values
-      # country_list <- setNames(nm = c(list_data$primary_key, list_data$roast_data, list_data$country)) # strips the header names
-      #
-      # output$get_country <- renderUI({
-      #     selectInput("selected_country", "Country", country_list, width = '100%', selected = input$selected_country)
-      # })
-      
-      # }
-      # output$StudentId <- renderUI({ # HIDE for now, not sure what this does
-      #     selectInput("StudentId", "Search by Clinic Id", width = '100%', ProjectList, selected = input$StudentId)
-      # })
       showModal(modalDialog(
         title = "Update Success",
         paste("Record was ", record_status),
@@ -616,7 +642,8 @@ server <- function(input, output, session) {
     })
     
     # When the new button is pushed, need session object so clear out fields
-    observeEvent(input$new_record, {
+    update_profile_fields <- function(profile_data) {
+      profile <- profile_data
         # updateTextInput(session, inputId = "primary_key", value = '')
         # updateTextInput(session, inputId = "", value = as.Date(Sys.Date()))
         # updateTextInput(session, inputId = "name", value = '')
@@ -629,9 +656,22 @@ server <- function(input, output, session) {
         # updateTextInput(session, inputId = "quality", value = '')
         # # updateTextInput(session, inputId = "processing_method", value = '')
         # # updateTextInput(session, inputId = "variety", value = '')
-        # updateTextAreaInput(session, inputId = "roast_notes", value = '')
-    })
+      
+        # updateTextAreaInput(session, inputId = "roast_notes", value = profile$roastingnotes)
+    }
     
-    #  -------------- Upload Roast Data from file/user -------------------- 
-
+    output$uploaded_data_preview <- renderFormattable({
+      if (valid_profile_upload()){
+        opened_json <- open_profile_as_json(alog_input = input$roast_curves_upload$datapath)
+      message(input$roast_curves_upload$datapath)
+      
+      # Convert opened JSON into R format :)
+      profile_as_json <- jsonlite::fromJSON(opened_json)
+      x <- profile_as_json$svValues %>% as.data.frame()
+      print(x)
+        formattable(x)
+        } else{
+          return(NULL)
+        }
+    })
 }
